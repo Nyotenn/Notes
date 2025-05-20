@@ -23,16 +23,6 @@
   </url><url>
     <loc>https://Nyotenn.github.io/Notes/post/</loc>
     <lastmod>2025-05-20T16:06:50+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://Nyotenn.github.io/Notes/zh-cn/post/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://Nyotenn.github.io/Notes/post/"
-                />
   </url><url>
     <loc>https://Nyotenn.github.io/Notes/p/detr/</loc>
     <lastmod>2025-05-20T16:05:50+08:00</lastmod>
@@ -68,87 +58,6 @@
                 href="https://Nyotenn.github.io/Notes/page/"
                 />
   </url><url>
-    <loc>https://Nyotenn.github.io/Notes/categories/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://Nyotenn.github.io/Notes/zh-cn/categories/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://Nyotenn.github.io/Notes/categories/"
-                />
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/tags/css/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/tags/html/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/tags/markdown/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/p/markdown-syntax-guide/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/categories/syntax/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/tags/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://Nyotenn.github.io/Notes/zh-cn/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://Nyotenn.github.io/Notes/tags/"
-                />
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/categories/themes/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/tags/themes/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/p/placeholder-text/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/tags/tag-with-whitespaces/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/categories/test/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://Nyotenn.github.io/Notes/zh-cn/categories/test/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://Nyotenn.github.io/Notes/categories/test/"
-                />
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/categories/test-with-whitespaces/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/tags/text/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/p/math-typesetting/</loc>
-    <lastmod>2019-03-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/tags/emoji/</loc>
-    <lastmod>2019-03-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/p/emoji-support/</loc>
-    <lastmod>2019-03-05T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://Nyotenn.github.io/Notes/about/</loc>
     <lastmod>2020-10-09T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -162,8 +71,34 @@
                 href="https://Nyotenn.github.io/Notes/about/"
                 />
   </url><url>
+    <loc>https://Nyotenn.github.io/Notes/categories/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://Nyotenn.github.io/Notes/zh-cn/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://Nyotenn.github.io/Notes/categories/"
+                />
+  </url><url>
     <loc>https://Nyotenn.github.io/Notes/links/</loc>
   </url><url>
     <loc>https://Nyotenn.github.io/Notes/search/</loc>
+  </url><url>
+    <loc>https://Nyotenn.github.io/Notes/tags/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://Nyotenn.github.io/Notes/zh-cn/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://Nyotenn.github.io/Notes/tags/"
+                />
+  </url><url>
+    <loc>https://Nyotenn.github.io/Notes/categories/test/</loc>
   </url>
 </urlset>
