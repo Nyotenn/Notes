@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head><script src="/Notes/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=Notes/livereload" data-no-instant defer></script><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder. 1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。 作者认为，这种差距在于它们属于不同的信号空间。 语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。 2、Related works 对比学习 一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法： 建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。 除此之外，由于字典规模大，encoder要学习的参数多，导致不能采用常规的 BP 方式进行学习，moco 采用了动量下降的方式进行学习，这一部分动量来自于 query encoder。">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder.\n1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。\n作者认为，这种差距在于它们属于不同的信号空间。\n语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。\n2、Related works 对比学习\n一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法：\n建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。\n">
 <title>Moco</title>
 
-<link rel='canonical' href='http://localhost:1313/Notes/p/moco/'>
+<link rel='canonical' href='https://Nyotenn.github.io/Notes/p/moco/'>
 
 <link rel="stylesheet" href="/Notes/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Moco">
-<meta property='og:description' content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder. 1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。 作者认为，这种差距在于它们属于不同的信号空间。 语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。 2、Related works 对比学习 一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法： 建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。 除此之外，由于字典规模大，encoder要学习的参数多，导致不能采用常规的 BP 方式进行学习，moco 采用了动量下降的方式进行学习，这一部分动量来自于 query encoder。">
-<meta property='og:url' content='http://localhost:1313/Notes/p/moco/'>
+<meta property='og:description' content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder.\n1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。\n作者认为，这种差距在于它们属于不同的信号空间。\n语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。\n2、Related works 对比学习\n一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法：\n建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。\n">
+<meta property='og:url' content='https://Nyotenn.github.io/Notes/p/moco/'>
 <meta property='og:site_name' content='Long Tian'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-20T10:36:50&#43;08:00'/><meta property='article:modified_time' content='2025-05-20T10:36:50&#43;08:00'/>
 <meta name="twitter:title" content="Moco">
-<meta name="twitter:description" content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder. 1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。 作者认为，这种差距在于它们属于不同的信号空间。 语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。 2、Related works 对比学习 一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法： 建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。 除此之外，由于字典规模大，encoder要学习的参数多，导致不能采用常规的 BP 方式进行学习，moco 采用了动量下降的方式进行学习，这一部分动量来自于 query encoder。">
+<meta name="twitter:description" content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder.\n1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。\n作者认为，这种差距在于它们属于不同的信号空间。\n语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。\n2、Related works 对比学习\n一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法：\n建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。\n">
     <link rel="shortcut icon" href="/favicon.ico" />
-
-  
-
 
     </head>
     <body class="
@@ -61,7 +58,7 @@
                     
                     
                         
-                        <img src="/Notes/img/avatar_hu13739649187745961479.png" width="300"
+                        <img src="/Notes/img/avatar_hu_f509edb42ecc0ebd.png" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -236,9 +233,9 @@
 
                             <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
                                 
-                                    <option value="http://localhost:1313/Notes/" selected>English</option>
+                                    <option value="https://Nyotenn.github.io/Notes/" selected>English</option>
                                 
-                                    <option value="http://localhost:1313/Notes/zh-cn/" >中文</option>
+                                    <option value="https://Nyotenn.github.io/Notes/zh-cn/" >中文</option>
                                 
                             </select>
                         </li>
@@ -385,8 +382,7 @@
     <h1 id="moco">Moco
 </h1><h2 id="一introduction">一、Introduction
 </h2><blockquote>
-<p>We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder.</p>
-</blockquote>
+<p>We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder.</p></blockquote>
 <h3 id="1present-situation">1、Present situation
 </h3><p>近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。</p>
 <p>作者认为，这种差距在于它们属于不同的信号空间。</p>
@@ -493,15 +489,13 @@
 </p>
 $$
    μ = \frac{1}{m} \sum_{i=1}^{m} x_i, \sigma^2 = \frac{1}{m} \sum_{i=1}^{m} (x_i - \mu)^2
-   $$
-</li>
+   $$</li>
 <li>
 <p><strong>归一化</strong>：使用计算出的均值和方差来归一化每个数据点。
 </p>
 $$
    \hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}}
-   $$
-<p>
+   $$<p>
 其中，$\epsilon$ 是一个非常小的数（例如 $1e-7$），用于防止分母为零。</p>
 </li>
 <li>
@@ -509,8 +503,7 @@ $$
 </p>
 $$
    y_i = \gamma \hat{x}_i + \beta
-   $$
-<p>
+   $$<p>
 其中，$\gamma$ 和 $\beta$ 是可学习的参数。</p>
 </li>
 </ol>
@@ -519,16 +512,14 @@ $$
 <p>如果归一化操作效果不好，则可以通过更改缩放平移值来抵消部分归一化的操作。</p>
 <h3 id="2why-dictionary">2、Why dictionary
 </h3><blockquote>
-<p>a larger dictionary may better sample the underlying continuous, high dimensional visual space, while the keys in the dictionary should be represented by the same or similar encoder so that their comparisons to the query are consistent</p>
-</blockquote>
+<p>a larger dictionary may better sample the underlying continuous, high dimensional visual space, while the keys in the dictionary should be represented by the same or similar encoder so that their comparisons to the query are consistent</p></blockquote>
 <p>使用一个队列可以让字典的规模很大，但同时也让 <code>encoder</code> 变得难以训练。因为梯度下降会将梯度冒泡到全部样本。</p>
 <p>传统的一个解决方法是直接将 <code>query encoder</code> 作为 <code>key encoder</code>。但实际上，这种方法表现并不好，作者认为，是因为 <code>encoder</code> 变化的太快，导致字典中的 <code>key</code> 丧失了一致性。</p>
 <p>因此，moco 提出了动量更新的方式：
 </p>
 $$
 \theta_k \leftarrow m\theta_k + (1-m)\theta_q
-$$
-<p>
+$$<p>
 其中，$m \in [0,1)$ 是动量系数，只有 $\theta_q$ 是需要进行 <code>BP</code> 的。</p>
 <p>尽管队列中的 <code>key</code> 可能是不同编码器产生的，这些编码器的差异也很小（如取 m = 0.999）</p>
 
@@ -705,7 +696,7 @@ $$
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
                 
                 >
-            </script><script type="text/javascript" src="/Notes/ts/main.7c5a254aec24d13c0331d8f201d96b9e636a153386a82bf318a3b61f290e41fe.js" defer></script>
+            </script><script type="text/javascript" src="/Notes/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');

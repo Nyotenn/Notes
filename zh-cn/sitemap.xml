@@ -2,98 +2,98 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/Notes/zh-cn/</loc>
+    <loc>https://Nyotenn.github.io/Notes/zh-cn/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/Notes/"
+                href="https://Nyotenn.github.io/Notes/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/Notes/zh-cn/"
+                href="https://Nyotenn.github.io/Notes/zh-cn/"
                 />
   </url><url>
-    <loc>http://localhost:1313/Notes/zh-cn/categories/</loc>
+    <loc>https://Nyotenn.github.io/Notes/zh-cn/categories/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/Notes/categories/"
+                href="https://Nyotenn.github.io/Notes/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/Notes/zh-cn/categories/"
+                href="https://Nyotenn.github.io/Notes/zh-cn/categories/"
                 />
   </url><url>
-    <loc>http://localhost:1313/Notes/zh-cn/p/test-chinese/</loc>
+    <loc>https://Nyotenn.github.io/Notes/zh-cn/p/test-chinese/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/Notes/zh-cn/post/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="http://localhost:1313/Notes/post/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="http://localhost:1313/Notes/zh-cn/post/"
-                />
-  </url><url>
-    <loc>http://localhost:1313/Notes/zh-cn/categories/test/</loc>
+    <loc>https://Nyotenn.github.io/Notes/zh-cn/post/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/Notes/categories/test/"
+                href="https://Nyotenn.github.io/Notes/post/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/Notes/zh-cn/categories/test/"
+                href="https://Nyotenn.github.io/Notes/zh-cn/post/"
                 />
   </url><url>
-    <loc>http://localhost:1313/Notes/zh-cn/categories/%E6%B5%8B%E8%AF%95/</loc>
+    <loc>https://Nyotenn.github.io/Notes/zh-cn/categories/test/</loc>
+    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://Nyotenn.github.io/Notes/categories/test/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://Nyotenn.github.io/Notes/zh-cn/categories/test/"
+                />
+  </url><url>
+    <loc>https://Nyotenn.github.io/Notes/zh-cn/categories/%E6%B5%8B%E8%AF%95/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/Notes/zh-cn/page/</loc>
+    <loc>https://Nyotenn.github.io/Notes/zh-cn/page/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/Notes/page/"
+                href="https://Nyotenn.github.io/Notes/page/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/Notes/zh-cn/page/"
+                href="https://Nyotenn.github.io/Notes/zh-cn/page/"
                 />
   </url><url>
-    <loc>http://localhost:1313/Notes/zh-cn/tags/</loc>
+    <loc>https://Nyotenn.github.io/Notes/zh-cn/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/Notes/tags/"
+                href="https://Nyotenn.github.io/Notes/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/Notes/zh-cn/tags/"
+                href="https://Nyotenn.github.io/Notes/zh-cn/tags/"
                 />
   </url><url>
-    <loc>http://localhost:1313/Notes/zh-cn/%E5%85%B3%E4%BA%8E/</loc>
+    <loc>https://Nyotenn.github.io/Notes/zh-cn/%E5%85%B3%E4%BA%8E/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/Notes/about/"
+                href="https://Nyotenn.github.io/Notes/about/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/Notes/zh-cn/%E5%85%B3%E4%BA%8E/"
+                href="https://Nyotenn.github.io/Notes/zh-cn/%E5%85%B3%E4%BA%8E/"
                 />
   </url>
 </urlset>
