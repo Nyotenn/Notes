@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head><meta charset='utf-8'>
+    <head><script src="/Notes/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=Notes/livereload" data-no-instant defer></script><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder. 1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。 作者认为，这种差距在于它们属于不同的信号空间。 语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。 2、Related works 对比学习 一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法： 建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。 除此之外，由于字典规模大，encoder要学习的参数多，导致不能采用常规的 BP 方式进行学习，moco 采用了动量下降的方式进行学习，这一部分动量来自于 query encoder。">
 <title>Moco</title>
 
-<link rel='canonical' href='https://Nyotenn.github.io/Notes/p/moco/'>
+<link rel='canonical' href='http://localhost:1313/Notes/p/moco/'>
 
 <link rel="stylesheet" href="/Notes/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Moco">
 <meta property='og:description' content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder. 1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。 作者认为，这种差距在于它们属于不同的信号空间。 语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。 2、Related works 对比学习 一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法： 建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。 除此之外，由于字典规模大，encoder要学习的参数多，导致不能采用常规的 BP 方式进行学习，moco 采用了动量下降的方式进行学习，这一部分动量来自于 query encoder。">
-<meta property='og:url' content='https://Nyotenn.github.io/Notes/p/moco/'>
+<meta property='og:url' content='http://localhost:1313/Notes/p/moco/'>
 <meta property='og:site_name' content='Long Tian'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-20T10:36:50&#43;08:00'/><meta property='article:modified_time' content='2025-05-20T10:36:50&#43;08:00'/>
 <meta name="twitter:title" content="Moco">
@@ -75,7 +75,7 @@
         
         <div class="site-meta">
             <h1 class="site-name"><a href="/Notes">Long Tian</a></h1>
-            <h2 class="site-description">Example description</h2>
+            <h2 class="site-description">Email: longtian23@mails.ucas.ac.cn</h2>
         </div>
     </header><ol class="menu-social">
             
@@ -236,11 +236,9 @@
 
                             <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
                                 
-                                    <option value="https://Nyotenn.github.io/Notes/" selected>English</option>
+                                    <option value="http://localhost:1313/Notes/" selected>English</option>
                                 
-                                    <option value="https://Nyotenn.github.io/Notes/zh-cn/" >中文</option>
-                                
-                                    <option value="https://Nyotenn.github.io/Notes/ar/" >عربي</option>
+                                    <option value="http://localhost:1313/Notes/zh-cn/" >中文</option>
                                 
                             </select>
                         </li>
@@ -707,7 +705,7 @@ $$
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
                 
                 >
-            </script><script type="text/javascript" src="/Notes/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+            </script><script type="text/javascript" src="/Notes/ts/main.7c5a254aec24d13c0331d8f201d96b9e636a153386a82bf318a3b61f290e41fe.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');
