@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://Nyotenn.github.io/Notes/</loc>
-    <lastmod>2025-05-20T10:36:50+08:00</lastmod>
+    <lastmod>2025-05-20T16:06:50+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -15,14 +15,14 @@
                 href="https://Nyotenn.github.io/Notes/"
                 />
   </url><url>
-    <loc>https://Nyotenn.github.io/Notes/p/clip/</loc>
-    <lastmod>2025-05-20T10:36:50+08:00</lastmod>
+    <loc>https://Nyotenn.github.io/Notes/p/got/</loc>
+    <lastmod>2025-05-20T16:06:50+08:00</lastmod>
   </url><url>
-    <loc>https://Nyotenn.github.io/Notes/p/moco/</loc>
-    <lastmod>2025-05-20T10:36:50+08:00</lastmod>
+    <loc>https://Nyotenn.github.io/Notes/p/ocr-free/</loc>
+    <lastmod>2025-05-20T16:06:50+08:00</lastmod>
   </url><url>
     <loc>https://Nyotenn.github.io/Notes/post/</loc>
-    <lastmod>2025-05-20T10:36:50+08:00</lastmod>
+    <lastmod>2025-05-20T16:06:50+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -33,6 +33,24 @@
                 hreflang="en"
                 href="https://Nyotenn.github.io/Notes/post/"
                 />
+  </url><url>
+    <loc>https://Nyotenn.github.io/Notes/p/detr/</loc>
+    <lastmod>2025-05-20T16:05:50+08:00</lastmod>
+  </url><url>
+    <loc>https://Nyotenn.github.io/Notes/p/fastervlm/</loc>
+    <lastmod>2025-05-20T16:05:50+08:00</lastmod>
+  </url><url>
+    <loc>https://Nyotenn.github.io/Notes/p/learning-to-learn-from-noisy-labeled-data/</loc>
+    <lastmod>2025-05-20T16:05:30+08:00</lastmod>
+  </url><url>
+    <loc>https://Nyotenn.github.io/Notes/p/vit/</loc>
+    <lastmod>2025-05-20T16:04:50+08:00</lastmod>
+  </url><url>
+    <loc>https://Nyotenn.github.io/Notes/p/clip/</loc>
+    <lastmod>2025-05-20T10:36:50+08:00</lastmod>
+  </url><url>
+    <loc>https://Nyotenn.github.io/Notes/p/moco/</loc>
+    <lastmod>2025-05-20T10:36:50+08:00</lastmod>
   </url><url>
     <loc>https://Nyotenn.github.io/Notes/archives/</loc>
     <lastmod>2019-05-28T00:00:00+00:00</lastmod>
@@ -143,8 +161,6 @@
                 hreflang="en"
                 href="https://Nyotenn.github.io/Notes/about/"
                 />
-  </url><url>
-    <loc>https://Nyotenn.github.io/Notes/p/</loc>
   </url><url>
     <loc>https://Nyotenn.github.io/Notes/links/</loc>
   </url><url>

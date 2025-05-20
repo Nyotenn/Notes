@@ -2,16 +2,16 @@
 <html lang="en" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="DETR 一、Introduction 1、DETR的目标 The goal of object detection is to predict a set of bounding boxes and category labels for each object of interest.\nDETR（Detection Transformer）是一种用于目标检测（Object Detection）的模型，该模型在2020年由Facebook AI Research（FAIR）提出。DETR的主要贡献在于，它使用Transformer架构来解决目标检测问题，从而避免了传统目标检测算法中常见的一些复杂性，如锚框（anchor boxes）、非极大值抑制（NMS）等。\n2、主要构成 Backbone Network: 通常使用ResNet或其他卷积神经网络作为基础网络，用于提取图像特征。 Transformer Encoder-Decoder: 在图像特征的基础上，使用Transformer的编码器-解码器结构进行目标检测。 Bipartite Matching Loss: 这是一个新颖的损失函数，用于在训练期间匹配预测框和真实框。 3、优点 简单性: 不需要复杂的锚框和NMS步骤。 端到端训练: 整个模型可以一次性、端到端地进行训练。 可扩展性: 可以容易地扩展到其他视觉任务。 4、缺点 速度: 由于Transformer的复杂性，模型的推理速度可能不如一些更简单的模型。 训练成本: 需要大量的计算资源。 二、损失函数 DETR（Detection Transformer）使用了一种名为“Bipartite Matching Loss”的特殊损失函数，这是其与传统目标检测算法最显著的不同之一。\nBipartite Matching Loss 这个损失函数主要由两部分组成：分类损失（Classification Loss）和位置损失（Localization Loss）。\n分类损失: 通常使用交叉熵损失（Cross-Entropy Loss）来计算每个预测框的分类损失。\n">
-<title></title>
+<title>DETR</title>
 
-<link rel='canonical' href='https://Nyotenn.github.io/Notes/p/'>
+<link rel='canonical' href='https://Nyotenn.github.io/Notes/p/detr/'>
 
-<link rel="stylesheet" href="/Notes/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="">
+<link rel="stylesheet" href="/Notes/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="DETR">
 <meta property='og:description' content="DETR 一、Introduction 1、DETR的目标 The goal of object detection is to predict a set of bounding boxes and category labels for each object of interest.\nDETR（Detection Transformer）是一种用于目标检测（Object Detection）的模型，该模型在2020年由Facebook AI Research（FAIR）提出。DETR的主要贡献在于，它使用Transformer架构来解决目标检测问题，从而避免了传统目标检测算法中常见的一些复杂性，如锚框（anchor boxes）、非极大值抑制（NMS）等。\n2、主要构成 Backbone Network: 通常使用ResNet或其他卷积神经网络作为基础网络，用于提取图像特征。 Transformer Encoder-Decoder: 在图像特征的基础上，使用Transformer的编码器-解码器结构进行目标检测。 Bipartite Matching Loss: 这是一个新颖的损失函数，用于在训练期间匹配预测框和真实框。 3、优点 简单性: 不需要复杂的锚框和NMS步骤。 端到端训练: 整个模型可以一次性、端到端地进行训练。 可扩展性: 可以容易地扩展到其他视觉任务。 4、缺点 速度: 由于Transformer的复杂性，模型的推理速度可能不如一些更简单的模型。 训练成本: 需要大量的计算资源。 二、损失函数 DETR（Detection Transformer）使用了一种名为“Bipartite Matching Loss”的特殊损失函数，这是其与传统目标检测算法最显著的不同之一。\nBipartite Matching Loss 这个损失函数主要由两部分组成：分类损失（Classification Loss）和位置损失（Localization Loss）。\n分类损失: 通常使用交叉熵损失（Cross-Entropy Loss）来计算每个预测框的分类损失。\n">
-<meta property='og:url' content='https://Nyotenn.github.io/Notes/p/'>
+<meta property='og:url' content='https://Nyotenn.github.io/Notes/p/detr/'>
 <meta property='og:site_name' content='Long Tian'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' />
-<meta name="twitter:title" content="">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-20T16:05:50&#43;08:00'/><meta property='article:modified_time' content='2025-05-20T16:05:50&#43;08:00'/>
+<meta name="twitter:title" content="DETR">
 <meta name="twitter:description" content="DETR 一、Introduction 1、DETR的目标 The goal of object detection is to predict a set of bounding boxes and category labels for each object of interest.\nDETR（Detection Transformer）是一种用于目标检测（Object Detection）的模型，该模型在2020年由Facebook AI Research（FAIR）提出。DETR的主要贡献在于，它使用Transformer架构来解决目标检测问题，从而避免了传统目标检测算法中常见的一些复杂性，如锚框（anchor boxes）、非极大值抑制（NMS）等。\n2、主要构成 Backbone Network: 通常使用ResNet或其他卷积神经网络作为基础网络，用于提取图像特征。 Transformer Encoder-Decoder: 在图像特征的基础上，使用Transformer的编码器-解码器结构进行目标检测。 Bipartite Matching Loss: 这是一个新颖的损失函数，用于在训练期间匹配预测框和真实框。 3、优点 简单性: 不需要复杂的锚框和NMS步骤。 端到端训练: 整个模型可以一次性、端到端地进行训练。 可扩展性: 可以容易地扩展到其他视觉任务。 4、缺点 速度: 由于Transformer的复杂性，模型的推理速度可能不如一些更简单的模型。 训练成本: 需要大量的计算资源。 二、损失函数 DETR（Detection Transformer）使用了一种名为“Bipartite Matching Loss”的特殊损失函数，这是其与传统目标检测算法最显著的不同之一。\nBipartite Matching Loss 这个损失函数主要由两部分组成：分类损失（Classification Loss）和位置损失（Localization Loss）。\n分类损失: 通常使用交叉熵损失（Cross-Entropy Loss）来计算每个预测框的分类损失。\n">
     <link rel="shortcut icon" href="/favicon.ico" />
 
@@ -336,7 +336,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/Notes/p/"></a>
+            <a href="/Notes/p/detr/">DETR</a>
         </h2>
     
         
@@ -347,6 +347,19 @@
     
     
     <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-05-20</time>
+            </div>
         
 
         
