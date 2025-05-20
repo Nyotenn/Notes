@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="DETR 一、Introduction 1、DETR的目标 The goal of object detection is to predict a set of bounding boxes and category labels for each object of interest.\nDETR（Detection Transformer）是一种用于目标检测（Object Detection）的模型，该模型在2020年由Facebook AI Research（FAIR）提出。DETR的主要贡献在于，它使用Transformer架构来解决目标检测问题，从而避免了传统目标检测算法中常见的一些复杂性，如锚框（anchor boxes）、非极大值抑制（NMS）等。\n2、主要构成 Backbone Network: 通常使用ResNet或其他卷积神经网络作为基础网络，用于提取图像特征。 Transformer Encoder-Decoder: 在图像特征的基础上，使用Transformer的编码器-解码器结构进行目标检测。 Bipartite Matching Loss: 这是一个新颖的损失函数，用于在训练期间匹配预测框和真实框。 3、优点 简单性: 不需要复杂的锚框和NMS步骤。 端到端训练: 整个模型可以一次性、端到端地进行训练。 可扩展性: 可以容易地扩展到其他视觉任务。 4、缺点 速度: 由于Transformer的复杂性，模型的推理速度可能不如一些更简单的模型。 训练成本: 需要大量的计算资源。 二、损失函数 DETR（Detection Transformer）使用了一种名为“Bipartite Matching Loss”的特殊损失函数，这是其与传统目标检测算法最显著的不同之一。\nBipartite Matching Loss 这个损失函数主要由两部分组成：分类损失（Classification Loss）和位置损失（Localization Loss）。\n分类损失: 通常使用交叉熵损失（Cross-Entropy Loss）来计算每个预测框的分类损失。\n">
+<title></title>
+
+<link rel='canonical' href='https://Nyotenn.github.io/Notes/p/'>
+
+<link rel="stylesheet" href="/Notes/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="">
+<meta property='og:description' content="DETR 一、Introduction 1、DETR的目标 The goal of object detection is to predict a set of bounding boxes and category labels for each object of interest.\nDETR（Detection Transformer）是一种用于目标检测（Object Detection）的模型，该模型在2020年由Facebook AI Research（FAIR）提出。DETR的主要贡献在于，它使用Transformer架构来解决目标检测问题，从而避免了传统目标检测算法中常见的一些复杂性，如锚框（anchor boxes）、非极大值抑制（NMS）等。\n2、主要构成 Backbone Network: 通常使用ResNet或其他卷积神经网络作为基础网络，用于提取图像特征。 Transformer Encoder-Decoder: 在图像特征的基础上，使用Transformer的编码器-解码器结构进行目标检测。 Bipartite Matching Loss: 这是一个新颖的损失函数，用于在训练期间匹配预测框和真实框。 3、优点 简单性: 不需要复杂的锚框和NMS步骤。 端到端训练: 整个模型可以一次性、端到端地进行训练。 可扩展性: 可以容易地扩展到其他视觉任务。 4、缺点 速度: 由于Transformer的复杂性，模型的推理速度可能不如一些更简单的模型。 训练成本: 需要大量的计算资源。 二、损失函数 DETR（Detection Transformer）使用了一种名为“Bipartite Matching Loss”的特殊损失函数，这是其与传统目标检测算法最显著的不同之一。\nBipartite Matching Loss 这个损失函数主要由两部分组成：分类损失（Classification Loss）和位置损失（Localization Loss）。\n分类损失: 通常使用交叉熵损失（Cross-Entropy Loss）来计算每个预测框的分类损失。\n">
+<meta property='og:url' content='https://Nyotenn.github.io/Notes/p/'>
+<meta property='og:site_name' content='Long Tian'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' />
+<meta name="twitter:title" content="">
+<meta name="twitter:description" content="DETR 一、Introduction 1、DETR的目标 The goal of object detection is to predict a set of bounding boxes and category labels for each object of interest.\nDETR（Detection Transformer）是一种用于目标检测（Object Detection）的模型，该模型在2020年由Facebook AI Research（FAIR）提出。DETR的主要贡献在于，它使用Transformer架构来解决目标检测问题，从而避免了传统目标检测算法中常见的一些复杂性，如锚框（anchor boxes）、非极大值抑制（NMS）等。\n2、主要构成 Backbone Network: 通常使用ResNet或其他卷积神经网络作为基础网络，用于提取图像特征。 Transformer Encoder-Decoder: 在图像特征的基础上，使用Transformer的编码器-解码器结构进行目标检测。 Bipartite Matching Loss: 这是一个新颖的损失函数，用于在训练期间匹配预测框和真实框。 3、优点 简单性: 不需要复杂的锚框和NMS步骤。 端到端训练: 整个模型可以一次性、端到端地进行训练。 可扩展性: 可以容易地扩展到其他视觉任务。 4、缺点 速度: 由于Transformer的复杂性，模型的推理速度可能不如一些更简单的模型。 训练成本: 需要大量的计算资源。 二、损失函数 DETR（Detection Transformer）使用了一种名为“Bipartite Matching Loss”的特殊损失函数，这是其与传统目标检测算法最显著的不同之一。\nBipartite Matching Loss 这个损失函数主要由两部分组成：分类损失（Classification Loss）和位置损失（Localization Loss）。\n分类损失: 通常使用交叉熵损失（Cross-Entropy Loss）来计算每个预测框的分类损失。\n">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/Notes/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/Notes/img/avatar_hu_f509edb42ecc0ebd.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/Notes">Long Tian</a></h1>
+            <h2 class="site-description">Email: longtian23@mails.ucas.ac.cn</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/Notes/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/Notes/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/Notes/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/Notes/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/Notes/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://Nyotenn.github.io/Notes/" selected>English</option>
+                                
+                                    <option value="https://Nyotenn.github.io/Notes/zh-cn/" >中文</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#一introduction">一、Introduction</a>
+      <ol>
+        <li><a href="#1detr的目标">1、DETR的目标</a></li>
+        <li><a href="#2主要构成">2、主要构成</a></li>
+        <li><a href="#3优点">3、优点</a></li>
+        <li><a href="#4缺点">4、缺点</a></li>
+      </ol>
+    </li>
+    <li><a href="#二损失函数">二、损失函数</a>
+      <ol>
+        <li><a href="#bipartite-matching-loss">Bipartite Matching Loss</a></li>
+        <li><a href="#匹配机制">匹配机制</a></li>
+        <li><a href="#优点和缺点">优点和缺点</a>
+          <ol>
+            <li><a href="#优点">优点</a></li>
+            <li><a href="#缺点">缺点</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#三详细结构">三、详细结构</a></li>
+    <li><a href="#四codes">四、Codes</a></li>
+    <li><a href="#五problems">五、Problems</a>
+      <ol>
+        <li><a href="#1为什么detr不需要nms">1、为什么DETR不需要nms</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/Notes/p/"></a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="detr">DETR
+</h1><h2 id="一introduction">一、Introduction
+</h2><h3 id="1detr的目标">1、DETR的目标
+</h3><blockquote>
+<p>The goal of object detection is to predict a set of bounding boxes and category labels for each object of interest.</p></blockquote>
+<p>DETR（Detection Transformer）是一种用于目标检测（Object Detection）的模型，该模型在2020年由Facebook AI Research（FAIR）提出。DETR的主要贡献在于，它使用Transformer架构来解决目标检测问题，从而避免了传统目标检测算法中常见的一些复杂性，如锚框（anchor boxes）、非极大值抑制（NMS）等。</p>
+<h3 id="2主要构成">2、主要构成
+</h3><ol>
+<li><strong>Backbone Network</strong>: 通常使用ResNet或其他卷积神经网络作为基础网络，用于提取图像特征。</li>
+<li><strong>Transformer Encoder-Decoder</strong>: 在图像特征的基础上，使用Transformer的编码器-解码器结构进行目标检测。</li>
+<li><strong>Bipartite Matching Loss</strong>: 这是一个新颖的损失函数，用于在训练期间匹配预测框和真实框。</li>
+</ol>
+<h3 id="3优点">3、优点
+</h3><ol>
+<li><strong>简单性</strong>: 不需要复杂的锚框和NMS步骤。</li>
+<li><strong>端到端训练</strong>: 整个模型可以一次性、端到端地进行训练。</li>
+<li><strong>可扩展性</strong>: 可以容易地扩展到其他视觉任务。</li>
+</ol>
+<h3 id="4缺点">4、缺点
+</h3><ol>
+<li><strong>速度</strong>: 由于Transformer的复杂性，模型的推理速度可能不如一些更简单的模型。</li>
+<li><strong>训练成本</strong>: 需要大量的计算资源。</li>
+</ol>
+<h2 id="二损失函数">二、损失函数
+</h2><p>DETR（Detection Transformer）使用了一种名为“Bipartite Matching Loss”的特殊损失函数，这是其与传统目标检测算法最显著的不同之一。</p>
+<h3 id="bipartite-matching-loss">Bipartite Matching Loss
+</h3><p>这个损失函数主要由两部分组成：分类损失（Classification Loss）和位置损失（Localization Loss）。</p>
+<ol>
+<li>
+<p><strong>分类损失</strong>: 通常使用交叉熵损失（Cross-Entropy Loss）来计算每个预测框的分类损失。</p>
+</li>
+<li>
+<p><strong>位置损失</strong>: 用于计算预测框和实际框（Ground Truth）之间的位置偏差，通常使用L1损失或者其他形式的回归损失。</p>
+</li>
+</ol>
+<h3 id="匹配机制">匹配机制
+</h3><p>在计算损失之前，需要将预测的目标框与实际的目标框进行匹配。这里使用了一种全局的二分匹配算法（Bipartite Matching Algorithm）。</p>
+<ol>
+<li>
+<p><strong>成本矩阵</strong>: 首先计算一个成本矩阵，其中每个元素表示一个预测框与一个实际框之间的“距离”。这个距离是由分类损失和位置损失共同决定的。</p>
+</li>
+<li>
+<p><strong>最优匹配</strong>: 使用匈牙利算法（Hungarian Algorithm）或其他优化算法找到成本矩阵的最优匹配。</p>
+</li>
+<li>
+<p><strong>损失计算</strong>: 只有匹配的预测框和实际框之间的损失会被计算并反向传播。未匹配的预测框会被认为是“背景”，其分类损失会被设置为与背景类的交叉熵损失。</p>
+</li>
+</ol>
+<h3 id="优点和缺点">优点和缺点
+</h3><h4 id="优点">优点
+</h4><ol>
+<li>
+<p><strong>全局优化</strong>: 由于使用了全局匹配，模型能够在整个图像范围内进行优化，而不是局限于单个锚框或者预测框。</p>
+</li>
+<li>
+<p><strong>简单直观</strong>: 不需要复杂的非极大值抑制（NMS）或者锚框策略。</p>
+</li>
+</ol>
+<h4 id="缺点">缺点
+</h4><ol>
+<li>
+<p><strong>计算复杂性</strong>: 匹配算法通常需要O(N^3)的时间复杂性，这可能在有大量目标框的情况下成为瓶颈。</p>
+</li>
+<li>
+<p><strong>对异常值敏感</strong>: 如果模型预测出大量错误的目标框，可能会影响匹配算法的性能。</p>
+</li>
+</ol>
+<h2 id="三详细结构">三、详细结构
+</h2><p><img src="/Notes/assets/image-20231010194146836.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20231010194146836"
+	
+	
+></p>
+<ul>
+<li><strong>backbone</strong>：主干网络，从图像中抽取特征</li>
+<li><strong>encoder</strong>：对主干网络输出的特征和位置编码相加后的序列进行进一步处理</li>
+<li><strong>decoder</strong>：将 decoder 的输出特征和 <code>object queries</code> 进行 cross attention，预测目标的类别和位置</li>
+<li><strong>prediction heads</strong>：进行 FFN 处理后输出目标类别和预测框</li>
+</ul>
+<h2 id="四codes">四、Codes
+</h2><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-py" data-lang="py"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">torch</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">torchvision.models</span> <span class="kn">import</span> <span class="n">resnet50</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">DETR</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span><span class="n">num_encoder_layers</span><span class="p">,</span> <span class="n">num_decoder_layers</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl"> 		<span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># We take only convolutional layers from ResNet-50 model</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">resnet50</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">children</span><span class="p">())[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">2048</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Transformer</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        								  <span class="n">num_encoder_layers</span><span class="p">,</span> <span class="n">num_decoder_layers</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">linear_class</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_classes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">linear_bbox</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">query_pos</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">row_embed</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">hidden_dim</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">col_embed</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">hidden_dim</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> 	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">H</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">        <span class="n">pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span>
+</span></span><span class="line"><span class="cl">        	<span class="bp">self</span><span class="o">.</span><span class="n">col_embed</span><span class="p">[:</span><span class="n">W</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        	<span class="bp">self</span><span class="o">.</span><span class="n">row_embed</span><span class="p">[:</span><span class="n">H</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">h</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        					 <span class="bp">self</span><span class="o">.</span><span class="n">query_pos</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_class</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_bbox</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">detr</span> <span class="o">=</span> <span class="n">DETR</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="mi">91</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">nheads</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">num_encoder_layers</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">num_decoder_layers</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">detr</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">1200</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">logits</span><span class="p">,</span> <span class="n">bboxes</span> <span class="o">=</span> <span class="n">detr</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="五problems">五、Problems
+</h2><h3 id="1为什么detr不需要nms">1、为什么DETR不需要nms
+</h3><p>每个 object query 代表一个预测目标，由于经过了 transformer 处理，使得每个 object query 能够获取其他 object query 的信息，尽量避免对相同目标进行预测。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Long Tian
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/Notes/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
