@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder. 1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。 作者认为，这种差距在于它们属于不同的信号空间。 语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。 2、Related works 对比学习 一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法： 建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。 除此之外，由于字典规模大，encoder要学习的参数多，导致不能采用常规的 BP 方式进行学习，moco 采用了动量下降的方式进行学习，这一部分动量来自于 query encoder。">
+<title>Moco</title>
+
+<link rel='canonical' href='https://Nyotenn.github.io/Notes/p/moco/'>
+
+<link rel="stylesheet" href="/Notes/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Moco">
+<meta property='og:description' content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder. 1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。 作者认为，这种差距在于它们属于不同的信号空间。 语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。 2、Related works 对比学习 一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法： 建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。 除此之外，由于字典规模大，encoder要学习的参数多，导致不能采用常规的 BP 方式进行学习，moco 采用了动量下降的方式进行学习，这一部分动量来自于 query encoder。">
+<meta property='og:url' content='https://Nyotenn.github.io/Notes/p/moco/'>
+<meta property='og:site_name' content='Long Tian'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-20T10:36:50&#43;08:00'/><meta property='article:modified_time' content='2025-05-20T10:36:50&#43;08:00'/>
+<meta name="twitter:title" content="Moco">
+<meta name="twitter:description" content="Moco 一、Introduction We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder. 1、Present situation 近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。 作者认为，这种差距在于它们属于不同的信号空间。 语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。 2、Related works 对比学习 一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法： 建立一个字典 字典的 key 是从样本中采样，然后经过 encoder 编码而来的 训练 encoder 使得 query 编码和它所匹配的样本 key 接近，而和其他 key 远离 3、Moco 和以往的对比学习不同的是，Moco用一个队列作为存储 key 的字典，当队列满后，新的 mini-batch 进来，旧的 mini-batch 出去。 除此之外，由于字典规模大，encoder要学习的参数多，导致不能采用常规的 BP 方式进行学习，moco 采用了动量下降的方式进行学习，这一部分动量来自于 query encoder。">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/Notes/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/Notes/img/avatar_hu13739649187745961479.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/Notes">Long Tian</a></h1>
+            <h2 class="site-description">Example description</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/Notes/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/Notes/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/Notes/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/Notes/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/Notes/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://Nyotenn.github.io/Notes/" selected>English</option>
+                                
+                                    <option value="https://Nyotenn.github.io/Notes/zh-cn/" >中文</option>
+                                
+                                    <option value="https://Nyotenn.github.io/Notes/ar/" >عربي</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#一introduction">一、Introduction</a>
+      <ol>
+        <li><a href="#1present-situation">1、Present situation</a></li>
+        <li><a href="#2related-works">2、Related works</a></li>
+        <li><a href="#3moco">3、Moco</a>
+          <ol>
+            <li><a href="#1training">1、training</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#二coding">二、Coding</a></li>
+    <li><a href="#三problems">三、Problems</a>
+      <ol>
+        <li><a href="#1batch-normalization">1、Batch Normalization</a></li>
+        <li><a href="#2why-dictionary">2、Why dictionary</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/Notes/p/moco/">Moco</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-05-20</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="moco">Moco
+</h1><h2 id="一introduction">一、Introduction
+</h2><blockquote>
+<p>We present Momentum Contrast (MoCo) for unsupervised visual representation learning. From a perspective on contrastive learning as dictionary look-up, we build a dynamic dictionary with a queue and a moving-averaged encoder.</p>
+</blockquote>
+<h3 id="1present-situation">1、Present situation
+</h3><p>近些年，无监督学习在 nlp 领域获得了巨大的成果，但在 cv 领域仍和监督学习存在较大差距。</p>
+<p>作者认为，这种差距在于它们属于不同的信号空间。</p>
+<p>语言任务是在离散的信号空间，可以简单地构造出字典，这是用于无监督学习的基础。而图片任务是在连续的、高维的空间中，它更关注如何构建字典。</p>
+<h3 id="2related-works">2、Related works
+</h3><p><strong>对比学习</strong></p>
+<p>一部分很有希望的研究是基于对比学习的。这些研究大体可以总结为以下方法：</p>
+<ol>
+<li>建立一个字典</li>
+<li>字典的 <code>key</code> 是从样本中采样，然后经过 <code>encoder</code> 编码而来的</li>
+<li>训练 <code>encoder</code> 使得 <code>query</code> 编码和它所匹配的样本 <code>key</code> 接近，而和其他 <code>key</code> 远离</li>
+</ol>
+<h3 id="3moco">3、Moco
+</h3><p>和以往的对比学习不同的是，Moco用一个队列作为存储 <code>key</code> 的字典，当队列满后，新的 <code>mini-batch</code> 进来，旧的 <code>mini-batch</code> 出去。</p>
+<p>除此之外，由于字典规模大，encoder要学习的参数多，导致不能采用常规的 <code>BP</code> 方式进行学习，<code>moco</code> 采用了动量下降的方式进行学习，这一部分动量来自于 <code>query encoder</code>。</p>
+<h4 id="1training">1、training
+</h4><p><img src="/Notes/assets/image-20230928130524176.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image-20230928130524176"
+	
+	
+></p>
+<p>上图列举了三种对比损失机制：</p>
+<ul>
+<li>第一种使用 <code>BP</code> 算法进行端到端的更新</li>
+<li>第二种是从 <code>memory bank</code> 中采样 <code>key</code></li>
+<li>moco 采用动量更新的 <code>encoder</code> 来产生 <code>key</code>，并维护一个队列来存储 <code>key</code></li>
+</ul>
+<h2 id="二coding">二、Coding
+</h2><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-py" data-lang="py"><span class="line"><span class="cl"><span class="c1"># f_q, f_k: encoder networks for query and key</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># queue: dictionary as a queue of K keys (CxK)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># m: momentum</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># t: temperature</span>
+</span></span><span class="line"><span class="cl"><span class="n">f_k</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">f_q</span><span class="o">.</span><span class="n">params</span> <span class="c1"># initialize</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span> <span class="c1"># load a minibatch x with N samples</span>
+</span></span><span class="line"><span class="cl"><span class="n">x_q</span> <span class="o">=</span> <span class="n">aug</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1"># a randomly augmented version</span>
+</span></span><span class="line"><span class="cl"><span class="n">x_k</span> <span class="o">=</span> <span class="n">aug</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1"># another randomly augmented version</span>
+</span></span><span class="line"><span class="cl"><span class="n">q</span> <span class="o">=</span> <span class="n">f_q</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x_q</span><span class="p">)</span> <span class="c1"># queries: NxC</span>
+</span></span><span class="line"><span class="cl"><span class="n">k</span> <span class="o">=</span> <span class="n">f_k</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x_k</span><span class="p">)</span> <span class="c1"># keys: NxC</span>
+</span></span><span class="line"><span class="cl"><span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="c1"># no gradient to keys</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># positive logits: Nx1</span>
+</span></span><span class="line"><span class="cl"><span class="n">l_pos</span> <span class="o">=</span> <span class="n">bmm</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">C</span><span class="p">),</span> <span class="n">k</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># negative logits: NxK</span>
+</span></span><span class="line"><span class="cl"><span class="n">l_neg</span> <span class="o">=</span> <span class="n">mm</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">C</span><span class="p">),</span> <span class="n">queue</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="n">K</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># logits: Nx(1+K)</span>
+</span></span><span class="line"><span class="cl"><span class="n">logits</span> <span class="o">=</span> <span class="n">cat</span><span class="p">([</span><span class="n">l_pos</span><span class="p">,</span> <span class="n">l_neg</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># contrastive loss, Eqn.(1)</span>
+</span></span><span class="line"><span class="cl"><span class="n">labels</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="c1"># positives are the 0-th</span>
+</span></span><span class="line"><span class="cl"><span class="n">loss</span> <span class="o">=</span> <span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="n">logits</span><span class="o">/</span><span class="n">t</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># SGD update: query network</span>
+</span></span><span class="line"><span class="cl"><span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">update</span><span class="p">(</span><span class="n">f_q</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># momentum update: key network</span>
+</span></span><span class="line"><span class="cl"><span class="n">f_k</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">m</span><span class="o">*</span><span class="n">f_k</span><span class="o">.</span><span class="n">params</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">m</span><span class="p">)</span><span class="o">*</span><span class="n">f_q</span><span class="o">.</span><span class="n">params</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># update dictionary</span>
+</span></span><span class="line"><span class="cl"><span class="n">enqueue</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="c1"># enqueue the current minibatch</span>
+</span></span><span class="line"><span class="cl"><span class="n">dequeue</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span> <span class="c1"># dequeue the earliest minibatch</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="三problems">三、Problems
+</h2><h3 id="1batch-normalization">1、Batch Normalization
+</h3><p>正如标准的 resnet 一样，$f_q$ 和 $f_k$ 都存在 BN 操作，而 BN 会计算样本的<code>方差</code>和<code>均值</code>，这些被称为泄露信息。</p>
+<p>通过这些泄露的信息，编码器能够很容易找到正样本，而非去学习一个好的模型。</p>
+<p><strong>BN操作</strong></p>
+<ol>
+<li>
+<p><strong>计算均值和方差</strong>：对于每一个小批量（batch）的数据，计算其特征的均值和方差。
+</p>
+$$
+   μ = \frac{1}{m} \sum_{i=1}^{m} x_i, \sigma^2 = \frac{1}{m} \sum_{i=1}^{m} (x_i - \mu)^2
+   $$
+</li>
+<li>
+<p><strong>归一化</strong>：使用计算出的均值和方差来归一化每个数据点。
+</p>
+$$
+   \hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}}
+   $$
+<p>
+其中，$\epsilon$ 是一个非常小的数（例如 $1e-7$），用于防止分母为零。</p>
+</li>
+<li>
+<p><strong>缩放和平移</strong>：归一化后的数据会被缩放（scale）和平移（shift）。
+</p>
+$$
+   y_i = \gamma \hat{x}_i + \beta
+   $$
+<p>
+其中，$\gamma$ 和 $\beta$ 是可学习的参数。</p>
+</li>
+</ol>
+<p><strong>原理</strong></p>
+<p>由于最后一步加上了缩放和平移，并交由神经网络进行学习，神经网络因此可根据 BN 操作的效益来决定缩放平移值的大小。</p>
+<p>如果归一化操作效果不好，则可以通过更改缩放平移值来抵消部分归一化的操作。</p>
+<h3 id="2why-dictionary">2、Why dictionary
+</h3><blockquote>
+<p>a larger dictionary may better sample the underlying continuous, high dimensional visual space, while the keys in the dictionary should be represented by the same or similar encoder so that their comparisons to the query are consistent</p>
+</blockquote>
+<p>使用一个队列可以让字典的规模很大，但同时也让 <code>encoder</code> 变得难以训练。因为梯度下降会将梯度冒泡到全部样本。</p>
+<p>传统的一个解决方法是直接将 <code>query encoder</code> 作为 <code>key encoder</code>。但实际上，这种方法表现并不好，作者认为，是因为 <code>encoder</code> 变化的太快，导致字典中的 <code>key</code> 丧失了一致性。</p>
+<p>因此，moco 提出了动量更新的方式：
+</p>
+$$
+\theta_k \leftarrow m\theta_k + (1-m)\theta_q
+$$
+<p>
+其中，$m \in [0,1)$ 是动量系数，只有 $\theta_q$ 是需要进行 <code>BP</code> 的。</p>
+<p>尽管队列中的 <code>key</code> 可能是不同编码器产生的，这些编码器的差异也很小（如取 m = 0.999）</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 Long Tian
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/Notes/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
